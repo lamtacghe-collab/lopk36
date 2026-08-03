@@ -40,18 +40,18 @@ if "players_df" not in st.session_state:
     st.session_state.players_df = loaded_players
   else:
     players = [
-        "Đạt",
-        "Phương Linh",
-        "Tuấn Anh",
-        "Hân",
-        "Dung",
-        "Chi",
-        "Khánh Hoà",
+        "Vũ Thành Đạt",
+        "Nguyễn Phương Linh",
+        "Trần Tuấn Anh",
+        "Trần Thị Hân",
+        "Vũ Thị Thuỳ Dung",
+        "Vũ Phương Chi",
+        "Đoàn Khánh Hoà",
         "Minh Ánh",
-        "Ngọc Anh",
-        "Lâm",
-        "Khánh Linh",
-        "Huy",
+        "Phan Ngọc Anh",
+        "Nguyễn Hoàng Lâm",
+        "Vũ Khánh Linh",
+        "Nguyễn Sinh Huy",
     ]
     st.session_state.players_df = pd.DataFrame({
         "Chọn": [True] * len(players),
@@ -87,7 +87,7 @@ if "points_df" not in st.session_state:
         ],
     })
 
-# 3. Khởi tạo kho phần thưởng hộp quà (Dạng text)
+# 3. Khởi tạo kho phần thưởng hộp quà
 if "box_pool_val" not in st.session_state:
   if saved_data and "box_pool" in saved_data:
     st.session_state.box_pool_val = saved_data["box_pool"]
@@ -183,9 +183,13 @@ with tab1:
           const ctx = canvas.getContext("2d");
           const prizes = {items_json};
           const colors = ["#f87171", "#fb923c", "#facc15", "#4ade80", "#38bdf8", "#c084fc", "#f472b6", "#818cf8"];
+          
+          const spinSound = new Audio('https://raw.githubusercontent.com/lamtacghe-collab/lopk36/refs/heads/main/quayvong.mp3');
+          const spinTimeTotal = 13000; // Đặt khớp 13 giây nhạc
+
           let startAngle = 0;
           let arc = prizes.length > 0 ? (Math.PI / (prizes.length / 2)) : 0;
-          let spinTimeout = null, spinAngleStart = 0, spinTime = 0, spinTimeTotal = 0;
+          let spinTimeout = null, spinAngleStart = 0, spinTime = 0;
 
           function drawWheel() {{
             ctx.clearRect(0, 0, 400, 400);
@@ -222,13 +226,19 @@ with tab1:
           }}
 
           function easeOut(t, b, c, d) {{ let ts = (t/=d)*t; let tc = ts*t; return b+c*(tc + -3*ts + 3*t); }}
+          
           function spinWheel() {{
             if (prizes.length === 0) return;
             document.getElementById("result").innerText = "";
-            spinAngleStart = Math.random() * 10 + 15;
-            spinTime = 0; spinTimeTotal = Math.random() * 3000 + 4000;
+            
+            spinSound.currentTime = 0;
+            spinSound.play().catch(e => console.log(e));
+
+            spinAngleStart = 25;
+            spinTime = 0;
             rotateWheel();
           }}
+
           function stopRotateWheel() {{
             let degrees = startAngle * 180 / Math.PI + 90;
             let arcd = arc * 180 / Math.PI;
@@ -303,9 +313,13 @@ with tab2:
           const ctx = canvas.getContext("2d");
           const prizes = {points_json};
           const colors = ["#f87171", "#fb923c", "#facc15", "#4ade80", "#38bdf8", "#c084fc", "#f472b6", "#818cf8"];
+          
+          const spinSound = new Audio('https://raw.githubusercontent.com/lamtacghe-collab/lopk36/refs/heads/main/quayvong.mp3');
+          const spinTimeTotal = 13000; // Đặt khớp 13 giây nhạc
+
           let startAngle = 0;
           let arc = prizes.length > 0 ? (Math.PI / (prizes.length / 2)) : 0;
-          let spinTimeout = null, spinAngleStart = 0, spinTime = 0, spinTimeTotal = 0;
+          let spinTimeout = null, spinAngleStart = 0, spinTime = 0;
 
           function drawWheel() {{
             ctx.clearRect(0, 0, 400, 400);
@@ -342,13 +356,19 @@ with tab2:
           }}
 
           function easeOut(t, b, c, d) {{ let ts = (t/=d)*t; let tc = ts*t; return b+c*(tc + -3*ts + 3*t); }}
+          
           function spinWheel() {{
             if (prizes.length === 0) return;
             document.getElementById("result").innerText = "";
-            spinAngleStart = Math.random() * 10 + 15;
-            spinTime = 0; spinTimeTotal = Math.random() * 3000 + 4000;
+            
+            spinSound.currentTime = 0;
+            spinSound.play().catch(e => console.log(e));
+
+            spinAngleStart = 25;
+            spinTime = 0;
             rotateWheel();
           }}
+
           function stopRotateWheel() {{
             let degrees = startAngle * 180 / Math.PI + 90;
             let arcd = arc * 180 / Math.PI;
