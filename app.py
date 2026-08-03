@@ -243,7 +243,7 @@ with tab1:
             spinSound.currentTime = 0;
             spinSound.play().catch(e => console.log(e));
 
-            spinAngleStart = 25;
+            spinAngleStart = Math.random() * 15 + 20;;
             spinTime = 0;
             rotateWheel();
           }}
@@ -373,7 +373,8 @@ with tab2:
             spinSound.currentTime = 0;
             spinSound.play().catch(e => console.log(e));
 
-            spinAngleStart = 25;
+            spinAngleStart = Math.random() * 15 + 20;
+
             spinTime = 0;
             rotateWheel();
           }}
