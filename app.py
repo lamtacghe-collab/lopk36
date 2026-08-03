@@ -184,8 +184,8 @@ with tab1:
           const prizes = {items_json};
           const colors = ["#f87171", "#fb923c", "#facc15", "#4ade80", "#38bdf8", "#c084fc", "#f472b6", "#818cf8"];
           
-          const spinSound = new Audio('https://raw.githubusercontent.com/lamtacghe-collab/lopk36/refs/heads/main/quayvong.mp3');
-          const spinTimeTotal = 13000; // Đặt khớp 13 giây nhạc
+          const spinSound = new Audio('https://raw.githubusercontent.com/lamtacghe-collab/lopk36/refs/heads/main/quayvong%20(mp3cut.net).mp3');
+          const spinTimeTotal = 10000;
 
           let startAngle = 0;
           let arc = prizes.length > 0 ? (Math.PI / (prizes.length / 2)) : 0;
@@ -314,8 +314,8 @@ with tab2:
           const prizes = {points_json};
           const colors = ["#f87171", "#fb923c", "#facc15", "#4ade80", "#38bdf8", "#c084fc", "#f472b6", "#818cf8"];
           
-          const spinSound = new Audio('https://raw.githubusercontent.com/lamtacghe-collab/lopk36/refs/heads/main/quayvong.mp3');
-          const spinTimeTotal = 13000; // Đặt khớp 13 giây nhạc
+          const spinSound = new Audio('https://raw.githubusercontent.com/lamtacghe-collab/lopk36/refs/heads/main/quayvong%20(mp3cut.net).mp3');
+          const spinTimeTotal = 10000;
 
           let startAngle = 0;
           let arc = prizes.length > 0 ? (Math.PI / (prizes.length / 2)) : 0;
