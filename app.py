@@ -87,19 +87,27 @@ if "points_df" not in st.session_state:
         ],
     })
 
-# 3. Khởi tạo kho phần thưởng hộp quà
-if "box_pool_val" not in st.session_state:
-  if saved_data and "box_pool" in saved_data:
-    st.session_state.box_pool_val = saved_data["box_pool"]
+# 3. Khởi tạo kho phần thưởng hộp quà (Chia thành May mắn và Đen đủi)
+if "box_lucky_val" not in st.session_state:
+  if saved_data and "box_lucky" in saved_data:
+    st.session_state.box_lucky_val = saved_data["box_lucky"]
   else:
-    st.session_state.box_pool_val = (
-        "🎁 100 Điểm, 🎁 50 Điểm, 🎁 Mất lượt, 🎁 X2 Điểm, 🎁 Chúc may mắn, 🎁 200"
-        " Điểm"
+    st.session_state.box_lucky_val = (
+        "🎁 100 Điểm, 🎁 50 Điểm, 🎁 200 Điểm, 🎁 X2 Điểm"
+    )
+
+if "box_unlucky_val" not in st.session_state:
+  if saved_data and "box_unlucky" in saved_data:
+    st.session_state.box_unlucky_val = saved_data["box_unlucky"]
+  else:
+    st.session_state.box_unlucky_val = (
+        "💀 Mất lượt, 💀 -10 Điểm, 💀 Trừ hết điểm, 💀 Chúc may mắn lần sau"
     )
 
 if "box_opened_state" not in st.session_state:
   st.session_state.box_opened_state = [False] * 6
   st.session_state.box_contents = [""] * 6
+  st.session_state.box_types = [""] * 6
 
 if "holding_wand" not in st.session_state:
   st.session_state.holding_wand = False
@@ -109,7 +117,8 @@ def save_all_data():
   data = {
       "players": st.session_state.players_df.to_dict("records"),
       "points": st.session_state.points_df.to_dict("records"),
-      "box_pool": st.session_state.box_pool_val,
+      "box_lucky": st.session_state.box_lucky_val,
+      "box_unlucky": st.session_state.box_unlucky_val,
   }
   with open(DATA_FILE, "w", encoding="utf-8") as f:
     json.dump(data, f, ensure_ascii=False, indent=4)
@@ -382,24 +391,39 @@ with tab2:
         """
     st.components.v1.html(wheel_html_point, height=530)
 
-# --- TAB 3: Mở Hộp Quà (Cầm gậy ngôi sao để mở) ---
+# --- TAB 3: Mở Hộp Quà (Chia làm May Mắn & Đen Đủi) ---
 with tab3:
   st.subheader("Cài đặt kho phần thưởng hộp quà")
-  box_pool_input = st.text_area(
-      "Nhập danh sách phần thưởng (cách nhau bằng dấu phẩy):",
-      value=st.session_state.box_pool_val,
-      key="box_pool_textarea",
-  )
 
-  if st.button("💾 Lưu kho phần thưởng", key="save_boxes"):
-    st.session_state.box_pool_val = box_pool_input
+  col_config1, col_config2 = st.columns(2)
+  with col_config1:
+    box_lucky_input = st.text_area(
+        "✨ Phần thưởng MAY MẮN (cách nhau bằng dấu phẩy):",
+        value=st.session_state.box_lucky_val,
+        key="box_lucky_textarea",
+    )
+  with col_config2:
+    box_unlucky_input = st.text_area(
+        "💀 Phần thưởng ĐEN ĐỦI (cách nhau bằng dấu phẩy):",
+        value=st.session_state.box_unlucky_val,
+        key="box_unlucky_textarea",
+    )
+
+  if st.button("💾 Lưu kho phần thưởng hộp quà", key="save_boxes"):
+    st.session_state.box_lucky_val = box_lucky_input
+    st.session_state.box_unlucky_val = box_unlucky_input
     save_all_data()
     st.success("Đã cập nhật kho phần thưởng!")
     st.rerun()
 
-  box_pool_list = [
+  lucky_pool_list = [
       p.strip()
-      for p in st.session_state.box_pool_val.split(",")
+      for p in st.session_state.box_lucky_val.split(",")
+      if p.strip()
+  ]
+  unlucky_pool_list = [
+      p.strip()
+      for p in st.session_state.box_unlucky_val.split(",")
       if p.strip()
   ]
 
@@ -429,6 +453,7 @@ with tab3:
     if st.button("🔄 Đặt lại hộp", use_container_width=True):
       st.session_state.box_opened_state = [False] * 6
       st.session_state.box_contents = [""] * 6
+      st.session_state.box_types = [""] * 6
       st.session_state.holding_wand = False
       st.rerun()
 
@@ -482,15 +507,51 @@ with tab3:
           if not st.session_state.holding_wand:
             st.error("❌ Bạn phải bấm 'Cầm gậy ngôi sao' trước khi mở hộp!")
           else:
-            pool = box_pool_list if box_pool_list else ["Phần thưởng trống"]
-            chosen_reward = random.choice(pool)
+            has_lucky = len(lucky_pool_list) > 0
+            has_unlucky = len(unlucky_pool_list) > 0
+
+            if has_lucky and has_unlucky:
+              is_lucky = random.choice([True, False])
+            elif has_lucky:
+              is_lucky = True
+            elif has_unlucky:
+              is_lucky = False
+            else:
+              is_lucky = True
+
+            if is_lucky:
+              chosen_reward = random.choice(
+                  lucky_pool_list
+                  if lucky_pool_list
+                  else ["Phần thưởng may mắn trống"]
+              )
+              box_type = "lucky"
+            else:
+              chosen_reward = random.choice(
+                  unlucky_pool_list
+                  if unlucky_pool_list
+                  else ["Phần thưởng đen đủi trống"]
+              )
+              box_type = "unlucky"
 
             st.session_state.box_opened_state[i] = True
             st.session_state.box_contents[i] = chosen_reward
+            st.session_state.box_types[i] = box_type
             st.balloons()
             st.rerun()
       else:
         reward = st.session_state.box_contents[i]
+        box_type = st.session_state.box_types[i]
+
+        win_audio_url = "https://raw.githubusercontent.com/lamtacghe-collab/lopk36/refs/heads/main/win.mp3"
+        lose_audio_url = "https://raw.githubusercontent.com/lamtacghe-collab/lopk36/refs/heads/main/lose.mp3"
+
+        audio_tag = ""
+        if box_type == "lucky":
+          audio_tag = f'<audio src="{win_audio_url}" autoplay></audio>'
+        elif box_type == "unlucky":
+          audio_tag = f'<audio src="{lose_audio_url}" autoplay></audio>'
+
         st.markdown(
             f"""
                 <div style="
@@ -511,6 +572,7 @@ with tab3:
                     <div style="font-size: 16px;">✨ ĐÃ MỞ ✨</div>
                     <div style="color: #facc15; font-size: 15px; margin-top: 3px;">{reward}</div>
                 </div>
+                {audio_tag}
                 """,
             unsafe_allow_html=True,
         )
