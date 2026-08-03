@@ -78,12 +78,12 @@ if "points_df" not in st.session_state:
     st.session_state.points_df = pd.DataFrame({
         "Chọn": [True, True, True, True, True, True],
         "Số điểm": [
+            "+1 điểm",
+            "+2 điểm",
+            "+3 điểm",
+            "Nhường lượt",
             "+10 điểm",
-            "+20 điểm",
-            "+50 điểm",
-            "Mất lượt",
-            "X2 điểm",
-            "-10 điểm",
+            "+5 điểm",
         ],
     })
 
@@ -93,7 +93,7 @@ if "box_lucky_val" not in st.session_state:
     st.session_state.box_lucky_val = saved_data["box_lucky"]
   else:
     st.session_state.box_lucky_val = (
-        "🎁 100 Điểm, 🎁 50 Điểm, 🎁 200 Điểm, 🎁 X2 Điểm"
+        "🎁 x2 Điểm, 🎁 x3 Điểm, 🎁 Xin 20 Điểm của bạn cao nhất, 🎁 X4 Điểm"
     )
 
 if "box_unlucky_val" not in st.session_state:
@@ -101,7 +101,7 @@ if "box_unlucky_val" not in st.session_state:
     st.session_state.box_unlucky_val = saved_data["box_unlucky"]
   else:
     st.session_state.box_unlucky_val = (
-        "💀 Mất lượt, 💀 -10 Điểm, 💀 Trừ hết điểm, 💀 Chúc may mắn lần sau"
+        "💀 -5 điểm, 💀 -10 Điểm, 💀 Chúc may mắn lần sau,💀 Tặng 10 điểm cho bạn thấp nhất "
     )
 
 if "box_opened_state" not in st.session_state:
